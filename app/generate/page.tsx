@@ -22,6 +22,8 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const [apiEndpoint, setApiEndpoint] = useState<string>('');
   const [previewData, setPreviewData] = useState<any>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [template, setTemplate] = useState<any>(null);
+  const [isMultiple, setIsMultiple] = useState<boolean>(false);
 
   const addField = () => {
     setFields([...fields, { id: uuidv4(), name: '', type: 'uuid' }]);
@@ -50,7 +52,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
     );
   };
 
-  const generateTemplate = async () => {
+  const generateTemplate = () => {
     const generateSubTemplate = (subFields: Field[] | undefined): any => {
       if (!subFields) return {};
       return subFields.reduce((acc, field) => {
@@ -61,18 +63,33 @@ const GenerateJsonApiGenerator: React.FC = () => {
       }, {} as any);
     };
 
-    const template = fields.reduce((acc, field) => {
+    const newTemplate = fields.reduce((acc, field) => {
       if (field.name) {
         acc[field.name] = field.type === 'object' ? generateSubTemplate(field.subFields) : field.type;
       }
       return acc;
     }, {} as any);
 
-    const generatedData = generateJson(template);
-    setPreviewData(generatedData);
+    setTemplate(newTemplate);
+    return newTemplate;
+  };
 
+  const generatePreview = () => {
+    const newTemplate = generateTemplate();
+    const generatedData = generateJson(newTemplate);
+    setPreviewData(generatedData);
+    setIsMultiple(false);
+  };
+
+  const createApi = async () => {
+    if (!previewData) {
+      console.error('No preview data available. Please generate a preview first.');
+      return;
+    }
+    
     try {
-      const response = await axios.post('/api/generate-json', { template });
+      const dataToSend = isMultiple ? previewData : [previewData];
+      const response = await axios.post('/api/generate-json', { data: dataToSend });
       const { apiEndpoint } = response.data;
       setApiEndpoint(apiEndpoint);
       setSnackbarOpen(true);
@@ -82,25 +99,10 @@ const GenerateJsonApiGenerator: React.FC = () => {
   };
 
   const generateMultiple = () => {
-    const generateSubTemplate = (subFields: Field[] | undefined): any => {
-      if (!subFields) return {};
-      return subFields.reduce((acc, field) => {
-        if (field.name) {
-          acc[field.name] = field.type === 'object' ? generateSubTemplate(field.subFields) : field.type;
-        }
-        return acc;
-      }, {} as any);
-    };
-
-    const template = fields.reduce((acc, field) => {
-      if (field.name) {
-        acc[field.name] = field.type === 'object' ? generateSubTemplate(field.subFields) : field.type;
-      }
-      return acc;
-    }, {} as any);
-
-    const generatedData = generateMultipleJson(template, 5); // Generates 5 instances of the JSON
+    const newTemplate = generateTemplate();
+    const generatedData = generateMultipleJson(newTemplate, 5); // Generates 5 instances of the JSON
     setPreviewData(generatedData);
+    setIsMultiple(true);
   };
 
   return (
@@ -112,7 +114,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
             Dynamic JSON Generator
           </Typography>
           <Typography variant="body1" gutterBottom sx={{ mb: 4 }}>
-            Design your API structure by adding fields and nested objects. Once you're done, generate a preview and get a unique API endpoint.
+            Design your API structure by adding fields and nested objects. Generate a preview, then create your API endpoint.
           </Typography>
 
           <FieldList 
@@ -126,11 +128,14 @@ const GenerateJsonApiGenerator: React.FC = () => {
             <Button onClick={addField} startIcon={<AddIcon />} variant="contained" sx={{ mr: 2 }}>
               Add Field
             </Button>
-            <Button onClick={generateTemplate} variant="contained" color="secondary" sx={{ mr: 2 }}>
-              Generate API
+            <Button onClick={generatePreview} variant="contained" color="secondary" sx={{ mr: 2 }}>
+              Generate Preview
             </Button>
-            <Button onClick={generateMultiple} variant="outlined" color="secondary">
+            <Button onClick={generateMultiple} variant="outlined" color="secondary" sx={{ mr: 2 }}>
               Generate Multiple JSON
+            </Button>
+            <Button onClick={createApi} variant="contained" color="primary">
+              Create API
             </Button>
           </Box>
 
