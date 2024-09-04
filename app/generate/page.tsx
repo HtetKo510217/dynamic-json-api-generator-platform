@@ -6,11 +6,13 @@ import {
   Typography,
   Box,
   Snackbar,
+  IconButton,
+  CircularProgress,
   ThemeProvider,
   CssBaseline,
   Container,
 } from '@mui/material';
-import { AddCircleOutline as AddIcon } from '@mui/icons-material';
+import { AddCircleOutline as AddIcon, FileCopy as FileCopyIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { generateJson, generateMultipleJson } from 'dynamic-json-generator';
 import { Field } from '@/lib/types';
@@ -24,6 +26,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [template, setTemplate] = useState<any>(null);
   const [isMultiple, setIsMultiple] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const addField = () => {
     setFields([...fields, { id: uuidv4(), name: '', type: 'uuid' }]);
@@ -86,7 +89,9 @@ const GenerateJsonApiGenerator: React.FC = () => {
       console.error('No preview data available. Please generate a preview first.');
       return;
     }
-    
+
+    setLoading(true);
+
     try {
       const dataToSend = isMultiple ? previewData : [previewData];
       const response = await axios.post('/api/generate-json', { data: dataToSend });
@@ -95,6 +100,8 @@ const GenerateJsonApiGenerator: React.FC = () => {
       setSnackbarOpen(true);
     } catch (error) {
       console.error('Error generating API endpoint:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,6 +110,13 @@ const GenerateJsonApiGenerator: React.FC = () => {
     const generatedData = generateMultipleJson(newTemplate, 5); // Generates 5 instances of the JSON
     setPreviewData(generatedData);
     setIsMultiple(true);
+  };
+
+  const copyToClipboard = () => {
+    if (apiEndpoint) {
+      navigator.clipboard.writeText(apiEndpoint);
+      setSnackbarOpen(false); // Close Snackbar after copying
+    }
   };
 
   return (
@@ -117,11 +131,11 @@ const GenerateJsonApiGenerator: React.FC = () => {
             Design your API structure by adding fields and nested objects. Generate a preview, then create your API endpoint.
           </Typography>
 
-          <FieldList 
-            fields={fields} 
-            updateField={updateField} 
-            removeField={removeField} 
-            addSubField={addSubField} 
+          <FieldList
+            fields={fields}
+            updateField={updateField}
+            removeField={removeField}
+            addSubField={addSubField}
           />
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 4 }}>
@@ -134,8 +148,14 @@ const GenerateJsonApiGenerator: React.FC = () => {
             <Button onClick={generateMultiple} variant="outlined" color="secondary" sx={{ mr: 2 }}>
               Generate Multiple JSON
             </Button>
-            <Button onClick={createApi} variant="contained" color="primary">
-              Create API
+            <Button
+              onClick={createApi}
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={20} /> : null}
+            >
+              {loading ? 'Creating API...' : 'Create API'}
             </Button>
           </Box>
 
@@ -152,9 +172,14 @@ const GenerateJsonApiGenerator: React.FC = () => {
 
           <Snackbar
             open={snackbarOpen}
-            autoHideDuration={6000}
+            autoHideDuration={10000} // Extend duration
             onClose={() => setSnackbarOpen(false)}
             message={`API endpoint created: ${apiEndpoint}`}
+            action={
+              <IconButton size="small" color="inherit" onClick={copyToClipboard}>
+                <FileCopyIcon fontSize="small" />
+              </IconButton>
+            }
           />
         </Container>
       </Box>

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
   await Promise.all(generatedDataPromises);
 
-  const apiEndpoint = `/api/generate-json/generated-data/${newTemplate.id}`;
+  const apiEndpoint = `/api/generate-json/${newTemplate.id}`;
 
   return NextResponse.json({ apiEndpoint });
 }
