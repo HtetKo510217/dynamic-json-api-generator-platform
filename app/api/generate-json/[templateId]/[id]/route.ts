@@ -28,49 +28,31 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { templateId: string } }
-) {
-  const { templateId } = params;
-  const data = await request.json();
-
-  try {
-    const newGeneratedData = await prisma.generatedData.create({
-      data: {
-        templateId,
-        data: data.data, // Assuming `data` is the JSON structure you want to store
-      },
-    });
-
-    return NextResponse.json(newGeneratedData, { status: 201 });
-  } catch (error) {
-    console.error("Error creating data:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
 export async function PUT(
   request: Request,
   { params }: { params: { templateId: string; id: string } }
 ) {
-  const { id } = params;
-  const data = await request.json();
+  const { templateId, id } = params;
+  const { data } = await request.json();
 
   try {
-    const updatedGeneratedData = await prisma.generatedData.update({
-      where: { id },
-      data: {
-        data: data.data, // Assuming `data` is the JSON structure you want to update
-      },
+    const updatedGeneratedData = await prisma.generatedData.updateMany({
+      where: { id, templateId },
+      data: { data },
     });
 
-    return NextResponse.json(updatedGeneratedData);
+    if (updatedGeneratedData.count === 0) {
+      return NextResponse.json(
+        { error: "Generated data not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Generated data updated successfully",
+    });
   } catch (error) {
-    console.error("Error updating data:", error);
+    console.error("Error updating generated data:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -82,16 +64,25 @@ export async function DELETE(
   request: Request,
   { params }: { params: { templateId: string; id: string } }
 ) {
-  const { id } = params;
+  const { templateId, id } = params;
 
   try {
-    await prisma.generatedData.delete({
-      where: { id },
+    const deletedGeneratedData = await prisma.generatedData.deleteMany({
+      where: { id, templateId },
     });
 
-    return NextResponse.json({ message: "Data deleted successfully" });
+    if (deletedGeneratedData.count === 0) {
+      return NextResponse.json(
+        { error: "Generated data not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Generated data deleted successfully",
+    });
   } catch (error) {
-    console.error("Error deleting data:", error);
+    console.error("Error deleting generated data:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
