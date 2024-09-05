@@ -86,7 +86,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
 
   const createApi = async () => {
     if (!previewData) {
-      console.error('No preview data available. Please generate a preview first.');
+      alert('No preview data available. Please generate a preview first.');
       return;
     }
 
@@ -115,7 +115,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const copyToClipboard = () => {
     if (apiEndpoint) {
       navigator.clipboard.writeText(apiEndpoint);
-      setSnackbarOpen(false); // Close Snackbar after copying
+      setSnackbarOpen(false); 
     }
   };
 
@@ -172,7 +172,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
 
           <Snackbar
             open={snackbarOpen}
-            autoHideDuration={10000} // Extend duration
+            autoHideDuration={15000}
             onClose={() => setSnackbarOpen(false)}
             message={`API endpoint created: ${apiEndpoint}`}
             action={

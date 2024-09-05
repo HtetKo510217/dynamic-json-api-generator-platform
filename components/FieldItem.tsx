@@ -26,6 +26,12 @@ interface FieldItemProps {
   depth?: number;
 }
 
+const fieldTypes: FieldType[] = [
+  'uuid', 'title', 'description', 'message','firstName', 'lastName', 'fullName',
+  'street', 'city', 'gender', 'phone', 'image', 'avatar', 'date', 'weekday', 
+  'month', 'boolean', 'number', 'object'
+];
+
 export const FieldItem: React.FC<FieldItemProps> = ({ field, index, updateField, removeField, addSubField, depth = 0 }) => {
   const [expanded, setExpanded] = useState(true);
 
@@ -58,7 +64,7 @@ export const FieldItem: React.FC<FieldItemProps> = ({ field, index, updateField,
           size="small"
           sx={{ mr: 2, minWidth: 120 }}
         >
-          {['uuid', 'title', 'description', 'message', 'fullName', 'street', 'city', 'imageUrl', 'date', 'number', 'boolean', 'object'].map((type) => (
+          {fieldTypes.map((type) => (
             <MenuItem key={type} value={type}>
               {type}
             </MenuItem>
@@ -75,7 +81,7 @@ export const FieldItem: React.FC<FieldItemProps> = ({ field, index, updateField,
       </Box>
       {field.type === 'object' && expanded && (
         <Box sx={{ mt: 2 }}>
-          <Button onClick={() => addSubField(field.id)} startIcon={<AddIcon />} variant="outlined" size="small">
+          <Button onClick={() => addSubField(field.id)} startIcon={<AddIcon />} variant="outlined" size="small" sx={{ mb: 2 }}>
             Add Sub-field
           </Button>
           {field.subFields && (

@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dynamic JSON API Generator Platform
 
-## Getting Started
+`dynamic-json-api-generator-platform` is a web-based tool built with Next.js and Prisma that enables users to create dynamic JSON data APIs on the fly. It leverages the power of the `dynamic-json-generator` npm package to generate customizable, fake JSON data and automatically exposes these as API endpoints.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Dynamic API Generation:** Create custom JSON data APIs based on user-defined templates.
+- **Nested Structures:** Define complex JSON templates with nested objects.
+- **Endpoint Creation:** Automatically create API endpoints with the generated data.
+- **Preview JSON Data:** Preview the generated JSON data before creating the API.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/dynamic-json-api-generator-platform.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
+   ```bash
+   cd dynamic-json-api-generator-platform
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up your database connection in the `.env` file:
+   ```
+   DATABASE_URL="your-database-connection-string"
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. Run Prisma migrations:
+   ```bash
+   npx prisma migrate dev
+   ```
 
-## Deploy on Vercel
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Access the platform through your browser at `http://localhost:3000`
+2. Create a new API by defining your JSON template
+3. Customize API settings such as endpoint, number of records, and locale
+4. Generate and test your dynamic API
+
+## Create a JSON API:
+
+- Define your JSON structure using the form fields.
+- Generate preview data to visualize the JSON format.
+- Once satisfied, click "Create API" to generate an API endpoint.
+- Copy the API URL and start using it in your application.
+
+## API Endpoints
+
+- `POST /api/generate-json`: Create a new template.
+- `GET /api/generate-json/:templateId`: Retrieve all saved templates.
+- `GET /api/generate-json/:templateId/:id`: Retrieve a specific generated data.
+- `POST /api/generate-json/:templateId/:id`: Create a new generated data.
+- `PUT /api/generate-json/:templateId/:id`: Update a generated data.
+- `DELETE /api/generate-json/:templateId/:id`: Delete a generated data.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the ISC License.
+
+## Author
+
+- [@htetko510217](https://www.github.com/htetko510217)
+
+## Related Projects
+
+- [Dynamic JSON npm Package](https://github.com/HtetKo510217/dynamic-json-generator)
