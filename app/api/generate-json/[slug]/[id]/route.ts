@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(
   request: Request,
-  { params }: { params: { templateId: string; id: string } }
+  { params }: { params: { slug: string; id: string } }
 ) {
   const { id } = params;
 
@@ -30,14 +30,14 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { templateId: string; id: string } }
+  { params }: { params: { slug: string; id: string } }
 ) {
-  const { templateId, id } = params;
+  const { slug, id } = params;
   const { data } = await request.json();
 
   try {
     const updatedGeneratedData = await prisma.generatedData.updateMany({
-      where: { id, templateId },
+      where: { id, template: { slug } },
       data: { data },
     });
 
@@ -62,13 +62,13 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { templateId: string; id: string } }
+  { params }: { params: { slug: string; id: string } }
 ) {
-  const { templateId, id } = params;
+  const { slug, id } = params;
 
   try {
     const deletedGeneratedData = await prisma.generatedData.deleteMany({
-      where: { id, templateId },
+      where: { id, template: { slug } },
     });
 
     if (deletedGeneratedData.count === 0) {

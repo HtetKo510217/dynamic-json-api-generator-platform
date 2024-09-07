@@ -1,25 +1,23 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
-import { generateJson } from 'dynamic-json-generator';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
-  const { data } = await request.json();
+  const { data, slug } = await request.json();
 
-  // Ensure data is always an array
   const dataArray = Array.isArray(data) ? data : [data];
 
   const newTemplate = await prisma.template.create({
     data: {
       id: uuidv4(),
       name: 'Generated Template',
-      schema: dataArray[0], // We use the first item as the template schema
+      schema: dataArray[0], 
+      slug: slug,
     },
   });
 
-  // Create generatedData entries for each item in dataArray
   const generatedDataPromises = dataArray.map(item => 
     prisma.generatedData.create({
       data: {
@@ -32,7 +30,8 @@ export async function POST(request: Request) {
 
   await Promise.all(generatedDataPromises);
 
-  const apiEndpoint = `/api/generate-json/${newTemplate.id}`;
+  // Generate the API endpoint using the slug
+  const apiEndpoint = `/api/generate-json/${newTemplate.slug}`;
 
   return NextResponse.json({ apiEndpoint });
 }

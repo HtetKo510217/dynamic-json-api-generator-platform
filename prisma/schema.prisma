@@ -13,6 +13,7 @@ model Template {
   id        String   @id @default(uuid())
   name      String
   schema    Json
+  slug      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   generatedDatas GeneratedData[]

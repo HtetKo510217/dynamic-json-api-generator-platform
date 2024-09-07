@@ -4,12 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request, { params }: { params: { templateId: string } }) {
-  const { templateId } = params;
+export async function GET(request: Request, { params }: { params: { slug: string } }) {
+  const { slug } = params;
 
   try {
     const template = await prisma.template.findUnique({
-      where: { id: templateId },
+      where: { slug: slug },
       include: { generatedDatas: true },
     });
 
@@ -24,18 +24,28 @@ export async function GET(request: Request, { params }: { params: { templateId: 
   }
 }
 
+
 export async function POST(
   request: Request,
-  { params }: { params: { templateId: string } }
+  { params }: { params: { slug: string } }
 ) {
-  const { templateId } = params;
+  const { slug } = params;
   const { data } = await request.json();
-  console.log('data',data, templateId);
+  console.log('data', data, slug);
+
   try {
+    const template = await prisma.template.findUnique({
+      where: { slug: slug }, 
+    });
+
+    if (!template) {
+      return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+    }
+
     const newGeneratedData = await prisma.generatedData.create({
       data: {
         id: uuidv4(),
-        templateId,
+        templateId: template.id, 
         data,
       },
     });

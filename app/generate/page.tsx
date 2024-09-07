@@ -11,6 +11,7 @@ import {
   ThemeProvider,
   CssBaseline,
   Container,
+  TextField,
 } from '@mui/material';
 import { AddCircleOutline as AddIcon, FileCopy as FileCopyIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -27,6 +28,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const [template, setTemplate] = useState<any>(null);
   const [isMultiple, setIsMultiple] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [slug, setSlug] = useState<string>(''); 
 
   const addField = () => {
     setFields([...fields, { id: uuidv4(), name: '', type: 'uuid' }]);
@@ -85,16 +87,25 @@ const GenerateJsonApiGenerator: React.FC = () => {
   };
 
   const createApi = async () => {
-    if (!previewData) {
+    const newTemplate = generateTemplate();
+    const generatedData = isMultiple ? generateMultipleJson(newTemplate, 5) : generateJson(newTemplate);
+  
+    setPreviewData(generatedData);
+    if (!generatedData) {
       alert('No preview data available. Please generate a preview first.');
+      return;
+    }
+    
+    if (!slug) {
+      alert('Please provide a slug for the API endpoint.');
       return;
     }
 
     setLoading(true);
-
+  
     try {
-      const dataToSend = isMultiple ? previewData : [previewData];
-      const response = await axios.post('/api/generate-json', { data: dataToSend });
+      const dataToSend = isMultiple ? generatedData : [generatedData];
+      const response = await axios.post('/api/generate-json', { data: dataToSend, slug });
       const { apiEndpoint } = response.data;
       setApiEndpoint(apiEndpoint);
       setSnackbarOpen(true);
@@ -104,6 +115,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   const generateMultiple = () => {
     const newTemplate = generateTemplate();
@@ -130,6 +142,14 @@ const GenerateJsonApiGenerator: React.FC = () => {
           <Typography variant="body1" gutterBottom sx={{ mb: 4 }}>
             Design your API structure by adding fields and nested objects. Generate a preview, then create your API endpoint.
           </Typography>
+
+          <TextField
+            label="API Slug (e.g. my-api)"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)} 
+            fullWidth
+            sx={{ mb: 4 }}
+          />
 
           <FieldList
             fields={fields}
