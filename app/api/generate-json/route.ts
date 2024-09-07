@@ -7,6 +7,14 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   const { data, slug } = await request.json();
 
+  const existingTemplate = await prisma.template.findUnique({
+    where: { slug: slug },
+  });
+
+  if (existingTemplate) {
+    return NextResponse.json({ error: 'Template with this slug already exists' }, { status: 400 });
+  }
+  
   const dataArray = Array.isArray(data) ? data : [data];
 
   const newTemplate = await prisma.template.create({

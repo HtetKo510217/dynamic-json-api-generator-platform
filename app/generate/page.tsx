@@ -109,8 +109,12 @@ const GenerateJsonApiGenerator: React.FC = () => {
       const { apiEndpoint } = response.data;
       setApiEndpoint(apiEndpoint);
       setSnackbarOpen(true);
-    } catch (error) {
-      console.error('Error generating API endpoint:', error);
+    } catch (error : any) {
+      if (error.response && error.response.status === 400) {
+        alert(`Error: ${error.response.data.error}`);
+      } else {
+        console.error('Error generating API endpoint:', error);
+      }  
     } finally {
       setLoading(false);
     }
