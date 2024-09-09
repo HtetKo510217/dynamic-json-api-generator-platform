@@ -1,40 +1,50 @@
+'use client';
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, Container, Grid } from '@mui/material';
+import { MdApi, MdBuild, MdLink } from 'react-icons/md'; 
 
 const features = [
   {
     title: 'API Generation',
-    description: 'Quickly generate dynamic JSON APIs tailored to your needs.'
+    description: 'Easily generate customizable JSON APIs tailored to your project needs. No coding required, just configure and deploy.',
+    icon: <MdApi size={40} className="text-blue-500" />
   },
   {
     title: 'CRUD Operations',
-    description: 'Perform Create, Read, Update, and Delete operations seamlessly.'
+    description: 'Manage your data effortlessly with built-in Create, Read, Update, and Delete operations for your APIs.',
+    icon: <MdBuild size={40} className="text-green-500" />
   },
   {
-    title: 'User Authentication',
-    description: 'Secure your APIs with built-in user authentication.'
+    title: 'Instant API URLs',
+    description: 'Get instant, ready-to-use API endpoints upon creation, allowing you to integrate them into your projects immediately.',
+    icon: <MdLink size={40} className="text-red-500" />
   }
 ];
 
 const InfoSection: React.FC = () => {
   return (
-    <section className="py-20">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section className="py-20 bg-gray-50">
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
           {features.map((feature, index) => (
-            <Card key={index} className="shadow-lg">
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {feature.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {feature.description}
-                </Typography>
-              </CardContent>
-            </Card>
+            <Grid item xs={12} md={4} key={index}>
+              <Card className="shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                <CardContent className="flex flex-col items-center text-center p-6">
+                  <div className="mb-4">
+                    {feature.icon}
+                  </div>
+                  <Typography variant="h6" component="div" className="font-semibold text-gray-800 mb-2">
+                    {feature.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" className="text-gray-600">
+                    {feature.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </div>
-      </div>
+        </Grid>
+      </Container>
     </section>
   );
 };
