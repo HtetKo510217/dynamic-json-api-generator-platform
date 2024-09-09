@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
           <a href="https://www.linkedin.com/in/htetko510217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <FaLinkedin size={24} className="text-white hover:text-gray-400" />
           </a>
-          <a href="https://github.com/htetko510217" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <a href="https://github.com/HtetKo510217/dynamic-json-api-generator-platform" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <FaGithub size={24} className="text-white hover:text-gray-400" />
           </a>
         </div>

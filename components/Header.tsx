@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@mui/material";
 // import { signIn, signOut, useSession } from "next-auth/react";
+import { FaGithub } from 'react-icons/fa'; 
 
 const Header: React.FC = () => {
   // const { data: session } = useSession();
@@ -24,6 +25,9 @@ const Header: React.FC = () => {
           <Link href="/guide" className="text-white text-lg font-medium hover:text-gray-200 transition duration-300">
             Guide
           </Link>
+          <a href="https://github.com/HtetKo510217/dynamic-json-api-generator-platform" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <FaGithub size={24} className="text-white hover:text-gray-400" />
+          </a>
         </nav>
         {/* <nav className="flex items-center space-x-4">
           {session ? (
