@@ -27,7 +27,7 @@ interface FieldItemProps {
 }
 
 const fieldTypes: FieldType[] = [
-  'uuid', 'title', 'description', 'message','firstName', 'lastName', 'fullName',
+  'uuid', 'title', 'word', 'description', 'message','firstName', 'lastName', 'fullName',
   'street', 'city', 'gender', 'phone', 'image', 'avatar', 'date', 'weekday', 
   'month', 'boolean', 'number', 'object'
 ];

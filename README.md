@@ -1,6 +1,6 @@
 # Dynamic JSON API Generator Platform
 
-`dynamic-json-api-generator-platform` is a web-based tool built with Next.js and Prisma that enables users to create dynamic JSON data APIs on the fly. It leverages the power of the `dynamic-json-generator` npm package to generate customizable, fake JSON data and automatically exposes these as API endpoints.
+`dynamic-json-api-generator-platform` is a web-based tool built with Next.js and Prisma that enables users to create dynamic JSON data APIs on the fly. It leverages the power of the  [dynamic-json-generator](https://www.npmjs.com/package/dynamic-json-generator) npm package to generate customizable, fake JSON data and automatically exposes these as API endpoints.
 
 ## Features
 
@@ -56,11 +56,15 @@
 ## API Endpoints
 
 - `POST /api/generate-json`: Create a new template.
-- `GET /api/generate-json/:templateId`: Retrieve all saved templates.
-- `GET /api/generate-json/:templateId/:id`: Retrieve a specific generated data.
-- `POST /api/generate-json/:templateId/:id`: Create a new generated data.
-- `PUT /api/generate-json/:templateId/:id`: Update a generated data.
-- `DELETE /api/generate-json/:templateId/:id`: Delete a generated data.
+- `GET /api/generate-json/:your-slug`: Retrieve all saved templates.
+- `GET /api/generate-json/:your-slug/:id`: Retrieve a specific generated data.
+- `POST /api/generate-json/:your-slug/:id`: Create a new generated data.
+- `PUT /api/generate-json/:your-slug/:id`: Update a generated data.
+- `DELETE /api/generate-json/:your-slug/:id`: Delete a generated data.
+
+## Documentation
+
+- For detailed usage instructions and examples, visit the [Guide](https://dynamic-json-api-generator-platform.vercel.app/guide).
 
 ## Contributing
 
@@ -76,4 +80,4 @@ This project is licensed under the ISC License.
 
 ## Related Projects
 
-- [Dynamic JSON npm Package](https://github.com/HtetKo510217/dynamic-json-generator)
+- [Dynamic JSON npm Package](https://www.npmjs.com/package/dynamic-json-generator)

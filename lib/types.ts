@@ -1,6 +1,7 @@
 export type FieldType =
   | 'uuid'         // Universally unique identifier
   | 'title'        // Sentence title
+  | 'word'         // Word
   | 'description'  // Detailed paragraph description
   | 'message'      // Paragraph message (similar to description)
   | 'firstName'    // First name
