@@ -60,8 +60,8 @@ export async function POST(
   }
 }
 
-export async function DELETE(request: Request) {
-  const { slug } = await request.json();
+export async function DELETE(request: Request, { params }: { params: { slug: string } }) {
+  const { slug } = params;
 
   const template = await prisma.template.findUnique({
     where: { slug: slug },
