@@ -57,6 +57,7 @@
 
 - `POST /api/generate-json`: Create a new template.
 - `GET /api/generate-json/:your-slug`: Retrieve all saved templates.
+- `DELETE /api/generate-json/:your-slug`: Delete all saved templates.
 - `GET /api/generate-json/:your-slug/:id`: Retrieve a specific generated data.
 - `POST /api/generate-json/:your-slug/:id`: Create a new generated data.
 - `PUT /api/generate-json/:your-slug/:id`: Update a generated data.

@@ -301,6 +301,12 @@ const GuidePage = () => {
             Additional Operations
           </Typography>
           <List>
+          <ListItem>
+              <ListItemText
+                primary="Deleting All Resources (DELETE)"
+                secondary="PUT /api/generate-json/your-slug"
+              />
+            </ListItem>
             <ListItem>
               <ListItemText
                 primary="Updating a Resource (PUT)"
