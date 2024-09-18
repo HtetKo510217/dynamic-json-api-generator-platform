@@ -43,3 +43,25 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ apiEndpoint });
 }
+
+export async function DELETE(request: Request) {
+  const { slug } = await request.json();
+
+  const template = await prisma.template.findUnique({
+    where: { slug: slug },
+  });
+
+  if (!template) {
+    return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+  }
+
+  await prisma.generatedData.deleteMany({
+    where: { templateId: template.id },
+  });
+
+  await prisma.template.delete({
+    where: { id: template.id },
+  });
+
+  return NextResponse.json({ message: 'Template and related data deleted' });
+}

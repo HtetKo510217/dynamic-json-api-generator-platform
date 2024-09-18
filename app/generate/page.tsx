@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
@@ -28,7 +28,14 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const [template, setTemplate] = useState<any>(null);
   const [isMultiple, setIsMultiple] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [slug, setSlug] = useState<string>(''); 
+  const [slug, setSlug] = useState<string>("");
+  const [slugSuggestion, setSlugSuggestion] = useState<string>(""); 
+
+  useEffect(() => {
+    if (slug) {
+      checkSlugAvailability(slug);
+    }
+  }, [slug]);
 
   const addField = () => {
     setFields([...fields, { id: uuidv4(), name: '', type: 'uuid' }]);
@@ -89,20 +96,20 @@ const GenerateJsonApiGenerator: React.FC = () => {
   const createApi = async () => {
     const newTemplate = generateTemplate();
     const generatedData = isMultiple ? generateMultipleJson(newTemplate, 5) : generateJson(newTemplate);
-  
+
     setPreviewData(generatedData);
     if (!generatedData) {
       alert('No preview data available. Please generate a preview first.');
       return;
     }
-    
+
     if (!slug) {
       alert('Please provide a slug for the API endpoint.');
       return;
     }
 
     setLoading(true);
-  
+
     try {
       const dataToSend = isMultiple ? generatedData : [generatedData];
       const response = await axios.post('/api/generate-json', { data: dataToSend, slug });
@@ -114,7 +121,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
         alert(`Error: ${error.response.data.error}`);
       } else {
         console.error('Error generating API endpoint:', error);
-      }  
+      }
     } finally {
       setLoading(false);
     }
@@ -128,10 +135,28 @@ const GenerateJsonApiGenerator: React.FC = () => {
     setIsMultiple(true);
   };
 
+  const checkSlugAvailability = async (slugToCheck: string) => {
+    try {
+      const response = await axios.post("/api/check-slug", {
+        slug: slugToCheck,
+      });
+
+      const { available, suggestedSlug } = response.data;
+
+      if (!available && suggestedSlug) {
+        setSlugSuggestion(suggestedSlug);
+      } else {
+        setSlugSuggestion(""); 
+      }
+    } catch (error) {
+      console.error("Error checking slug availability:", error);
+    }
+  };
+
   const copyToClipboard = () => {
     if (apiEndpoint) {
       navigator.clipboard.writeText(apiEndpoint);
-      setSnackbarOpen(false); 
+      setSnackbarOpen(false);
     }
   };
 
@@ -150,10 +175,15 @@ const GenerateJsonApiGenerator: React.FC = () => {
           <TextField
             label="API Slug (e.g. my-api)"
             value={slug}
-            onChange={(e) => setSlug(e.target.value)} 
+            onChange={(e) => setSlug(e.target.value)}
             fullWidth
             sx={{ mb: 4 }}
           />
+          {slugSuggestion && (
+            <Typography variant="body2" color="error">
+              Slug already exists. Suggested: <strong>{slugSuggestion}</strong>
+            </Typography>
+          )}
 
           <FieldList
             fields={fields}
