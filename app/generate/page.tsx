@@ -127,6 +127,20 @@ const GenerateJsonApiGenerator: React.FC = () => {
     }
   };
   
+  const areFieldsValid = (): boolean => {
+    const validateFields = (fieldsToValidate: Field[]): boolean => {
+      return fieldsToValidate.every(field => {
+        if (!field.name.trim()) return false;
+        if (field.type === 'object' && field.subFields) {
+          return validateFields(field.subFields);
+        }
+        return true;
+      });
+    };
+  
+    return validateFields(fields);
+  };
+  
 
   const generateMultiple = () => {
     const newTemplate = generateTemplate();
@@ -206,7 +220,7 @@ const GenerateJsonApiGenerator: React.FC = () => {
               onClick={createApi}
               variant="contained"
               color="primary"
-              disabled={loading}
+              disabled={loading || !slug.trim() || !areFieldsValid()} 
               startIcon={loading ? <CircularProgress size={20} /> : null}
             >
               {loading ? 'Creating API...' : 'Create API'}
